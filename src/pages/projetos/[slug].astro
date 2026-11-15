@@ -1,0 +1,22 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import Icon from '../../components/Icon.astro';
+import { projects } from '../../data/portfolio';
+export function getStaticPaths() { return projects.map(project => ({ params: { slug: project.slug }, props: { project } })); }
+const { project: p } = Astro.props;
+const next = projects[(projects.findIndex(project => project.slug === p.slug) + 1) % projects.length];
+---
+<Layout title={`${p.name} — Estudo de caso · Irlan Barros`} description={p.description} project={p.slug}>
+  <main id="conteudo" class:list={['case-page', `accent-${p.accent}`]}>
+    <header class="case-header container"><a href="/#projetos" class="text-button back-link">← Todos os projetos</a><div class="case-eyebrow"><span class="eyebrow">ESTUDO DE CASO {p.number} / {p.category}</span><span class="project-status"><span></span>{p.status}</span></div><h1>{p.name}<span class="accent">.</span></h1><p class="case-subtitle">{p.subtitle}</p><p class="case-description">{p.description}</p><div class="case-actions">{p.demo && <a class="button primary" href={p.demo} target="_blank" rel="noopener">Abrir aplicação <Icon name="arrow" size={17}/></a>}{p.repository && <a class="button ghost" href={p.repository} target="_blank" rel="noopener">Ver repositório <Icon name="code" size={17}/></a>}</div><div class="tags">{p.tech.map(t => <span>{t}</span>)}</div></header>
+    {p.image && <div class:list={['case-cover container', { hardware: p.slug === 'flowcount' }]}><Image src={p.image} alt={p.imageAlt || p.name} widths={[600, 1000, 1500]} sizes="(max-width: 1200px) 90vw, 1180px" quality={90} format="webp" loading="eager"/></div>}
+    <div class="case-body container"><aside class="case-summary"><span class="eyebrow">NESTE ESTUDO</span><nav aria-label="Conteúdo do estudo de caso"><a href="#problema">01. O problema</a><a href="#arquitetura">02. Arquitetura</a><a href="#solucao">03. A solução</a><a href="#resultado">04. Estado & contribuição</a></nav><div><span class="eyebrow">PARTICIPAÇÃO</span><p>{p.participation}</p></div></aside><div class="case-content">
+      <section id="problema"><span class="eyebrow">01 / PONTO DE PARTIDA</span><h2>O problema real.</h2><p>{p.problem}</p></section>
+      <section id="arquitetura"><span class="eyebrow">02 / DECISÕES DOCUMENTADAS</span><h2>Como as peças se conectam.</h2><p>{p.architecture}</p><div class="architecture-flow" aria-label="Visão conceitual dos elementos do projeto">{p.diagram.map((step,i) => <div><span class="mono">0{i+1}</span><strong>{step}</strong>{i < p.diagram.length - 1 && <Icon name="right" size={16}/>}</div>)}</div><p class="diagram-caption">Visão conceitual dos elementos descritos no projeto.</p></section>
+      <section id="solucao"><span class="eyebrow">03 / CONSTRUÇÃO</span><h2>A solução em prática.</h2><ul class="solution-list">{p.solution.map(s => <li><Icon name="check" size={18}/><span>{s}</span></li>)}</ul>{p.gallery?.map(g => <figure><Image src={g.image} alt={g.alt} widths={[600, 1000]} sizes="(max-width: 800px) 90vw, 750px" loading="lazy" format="webp"/><figcaption>{g.alt}</figcaption></figure>)}</section>
+      <section id="resultado"><span class="eyebrow">04 / EVIDÊNCIAS & CONTINUIDADE</span><h2>O estado da construção.</h2><p>{p.evidence}</p><div class="case-participation"><h3>Minha participação</h3><p>{p.participation}</p></div><p class="editorial-note">Este estudo se limita às informações documentadas no perfil. Desafios pessoais, aprendizados e resultados adicionais podem ser incorporados quando houver relatos verificáveis.</p></section>
+    </div></div>
+    <nav class="next-project container" aria-label="Próximo projeto"><span class="eyebrow">CONTINUE EXPLORANDO</span><a href={`/projetos/${next.slug}/`}><span>{next.name}</span><Icon name="arrow" size={36}/></a><p>{next.subtitle}</p></nav>
+  </main>
+</Layout>

@@ -1,0 +1,104 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+import Avatar from '../components/Avatar.astro';
+import { profile, projects, skillGroups, relatedProjects, experience, education, sections } from '../data/portfolio';
+const categories = [...new Set(projects.map(p => p.category))];
+---
+<Layout>
+  <main id="conteudo">
+    <section class="hero container" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow hero-eyebrow"><span class="status-dot"></span> DEVELOPER ODYSSEY <span class="dim">/ PORTFÓLIO</span></div>
+        <p class="hero-name">Olá, eu sou {profile.name}.</p>
+        <h1 id="hero-title">Ideias viram<br/>sistemas.<br/><span class="accent">Conexões criam<br class="desktop-break"/> o próximo passo.</span></h1>
+        <p class="hero-description">Desenvolvimento full stack, engenharia de software e uma curiosidade que vai do código ao mundo físico.</p>
+        <div class="hero-actions"><a class="button primary" href="#projetos">Explore meus projetos <Icon name="arrow" size={18}/></a><a class="button ghost" href={profile.resume} target="_blank" rel="noopener"><Icon name="file" size={17}/> Currículo <span class="small">PDF</span></a></div>
+        <a class="hero-contact" href="#contato">Vamos construir algo juntos? <span>Entre em contato <Icon name="arrow" size={14}/></span></a>
+      </div>
+      <div class="odyssey-map" aria-label="Mapa de exploração: desenvolvimento, pesquisa, sistemas e ensino">
+        <div class="map-coordinate mono">MAPA DE CONEXÕES <span>01 / ∞</span></div>
+        <svg class="orbit-lines" viewBox="0 0 600 620" fill="none" aria-hidden="true">
+          <defs><radialGradient id="orbit-glow"><stop stop-color="#b8ee97" stop-opacity=".08"/><stop offset="1" stop-color="#b8ee97" stop-opacity="0"/></radialGradient></defs>
+          <circle cx="300" cy="310" r="276" fill="url(#orbit-glow)"/>
+          <circle cx="300" cy="310" r="250"/><circle cx="300" cy="310" r="190" stroke-dasharray="2 8"/><circle cx="300" cy="310" r="130"/>
+          <ellipse cx="300" cy="310" rx="285" ry="98" transform="rotate(-38 300 310)"/>
+          <path d="M96 180 300 310 492 174M300 310 453 491M300 310 106 444" stroke-dasharray="4 7"/>
+          <path d="M300 35v16m0 518v16M25 310h16m518 0h16"/>
+          <g fill="currentColor" stroke="none"><circle cx="102" cy="465" r="3"/><circle cx="403" cy="82" r="3"/><circle cx="529" cy="411" r="3"/><circle cx="195" cy="82" r="2"/><circle cx="300" cy="560" r="3"/></g>
+        </svg>
+        <div class="map-avatar"><div class="portrait-ring"><Avatar priority/><span class="portrait-marker" aria-hidden="true">IB</span></div><button class="avatar-trigger js-only" data-open-avatar><Icon name="avatar" size={15}/> Trocar avatar</button></div>
+        <a class="map-node node-development" href="#projetos"><span class="node-icon"><Icon name="code" size={21}/></span><span><small>01 / CONSTRUIR</small>Desenvolvimento</span><Icon name="arrow" size={13}/></a>
+        <a class="map-node node-research" href="#pesquisa"><span class="node-icon"><Icon name="flask" size={20}/></span><span><small>02 / INVESTIGAR</small>Pesquisa</span><Icon name="arrow" size={13}/></a>
+        <a class="map-node node-hardware" href="#habilidades"><span class="node-icon"><Icon name="chip" size={21}/></span><span><small>03 / CONECTAR</small>Sistemas</span><Icon name="arrow" size={13}/></a>
+        <a class="map-node node-education" href="#trajetoria"><span class="node-icon"><Icon name="book" size={19}/></span><span><small>04 / COMPARTILHAR</small>Ensino</span><Icon name="arrow" size={13}/></a>
+        <div class="map-caption"><span class="map-cross">+</span> Diferentes caminhos. A mesma curiosidade.<span class="map-cross">+</span></div>
+      </div>
+      <div class="hero-bottom"><span class="mono">CÓDIGO COM PROPÓSITO. CONHECIMENTO EM MOVIMENTO.</span><a href="#sobre">Conheça a trajetória <Icon name="down" size={15}/></a></div>
+    </section>
+
+    <div class="journey-strip container exploration-only js-only"><div><Icon name="compass" size={18}/><span>Sua exploração</span><span class="progress-numbers"><span data-progress-count>0</span>/{sections.length}</span><div class="progress-track" role="progressbar" aria-label="Progresso de exploração" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span data-progress-bar></span></div><span class="mono" data-progress-percent>0%</span></div><button data-open-progress class="text-button">Diário de bordo <Icon name="arrow" size={15}/></button></div>
+
+    <nav class="professional-nav professional-only container" aria-label="Atalhos profissionais">{sections.map(s => <a href={`#${s.id}`}>{s.label}</a>)}<a href={profile.resume}>Currículo <Icon name="arrow" size={13}/></a></nav>
+
+    <section id="sobre" class="section about-section container" data-explore aria-labelledby="about-title">
+      <div class="section-label"><span>01</span><p>SOBRE MIM</p></div>
+      <div class="about-grid">
+        <div class="about-heading"><h2 id="about-title">Curiosidade como<br/>ponto de partida.</h2><div class="profile-mini"><Avatar/><div><strong>{profile.name}</strong><span>{profile.role}</span><button class="text-button js-only" data-open-avatar>Trocar avatar <Icon name="arrow" size={13}/></button></div></div></div>
+        <div class="about-text"><p class="lead">{profile.about}</p><p>{profile.approach}</p><div class="about-facts"><div><span class="mono">FORMAÇÃO ATUAL</span><strong>Ciência da Computação</strong><span>UFCA · desde 2023</span></div><div><span class="mono">TAMBÉM EM SALA DE AULA</span><strong>Professor de robótica</strong><span>Instituto José Bernardino</span></div></div></div>
+      </div>
+    </section>
+
+    <aside class="interest-strip container"><span class="eyebrow">PRÓXIMOS HORIZONTES</span><p>{profile.interests}</p></aside>
+
+    <section id="projetos" class="section projects-section container" data-explore aria-labelledby="projects-title">
+      <div class="section-label"><span>02</span><p>PROJETOS</p></div>
+      <div class="section-heading"><div><h2 id="projects-title">Do problema<br/>ao que funciona<span class="accent">.</span></h2><p>Ideias em prática. Decisões de engenharia. Código para explorar.</p></div><span class="section-counter mono">{String(projects.length).padStart(2, '0')} PROJETOS SELECIONADOS</span></div>
+      <div class="project-filters js-only" role="group" aria-label="Filtrar projetos por categoria"><button class="filter-button" data-filter="Todos" aria-pressed="true">Todos <span>{projects.length}</span></button>{categories.map(c => <button class="filter-button" data-filter={c} aria-pressed="false">{c}</button>)}</div>
+      <p class="sr-only" data-filter-status role="status"></p>
+      <div class="project-grid">
+        {projects.map((p, index) => <article class:list={['project-card', `accent-${p.accent}`, { featured: index === 0 }]} data-project-category={p.category}>
+          <a href={`/projetos/${p.slug}/`} class="project-visual" tabindex="-1" aria-hidden="true">
+            {p.image ? <Image src={p.image} alt="" widths={p.slug === 'flowcount' ? [360, 640] : [500, 900, 1200]} sizes="(max-width: 650px) 90vw, 48vw" quality={85} format="webp" loading="lazy" class:list={{ 'hardware-image': p.slug === 'flowcount' }}/>
+              : p.slug === 'blockchain-research' ? <div class="research-visual"><span class="mono">CORPUS → EVIDÊNCIA → PADRÕES</span><div class="research-diagram"><span>01<br/><small>ISSUES</small></span><i></i><span>02<br/><small>LLMs</small></span><i></i><span>03<br/><small>PADRÕES</small></span></div><span class="mono">CLASSIFICAR. VALIDAR. RASTREAR.</span></div>
+              : <div class="graph-visual"><svg viewBox="0 0 440 220"><path d="M65 100 150 47 235 100 330 45 380 145 235 100 155 180 65 100M150 47l5 133m80-80 75 95 70-50"/><g>{[[65,100],[150,47],[235,100],[330,45],[380,145],[155,180],[310,195]].map(([x,y],i)=><g><circle cx={x} cy={y} r={i === 2 ? 17 : 11}/><text x={x} y={y+4}>{i}</text></g>)}</g></svg><span class="mono">DFS · BFS · DIJKSTRA</span></div>}
+            <span class="visual-tag mono">{p.category}</span>
+          </a>
+          <div class="project-copy"><div class="project-topline"><span class="mono">MISSÃO {p.number}</span><span class="project-status"><span></span>{p.status}</span></div><h3><a href={`/projetos/${p.slug}/`}>{p.name}<Icon name="arrow" size={23}/></a></h3><p>{p.description}</p><div class="tags">{p.tech.slice(0, 4).map(t => <span>{t}</span>)}{p.tech.length > 4 && <span>+{p.tech.length - 4}</span>}</div><a class="case-link" href={`/projetos/${p.slug}/`}>Explorar estudo de caso <Icon name="right" size={17}/></a></div>
+        </article>)}
+      </div>
+      <p class="projects-note"><span class="status-dot"></span> Projetos de autoria, colaboração e pesquisa. A participação está descrita em cada estudo.</p>
+    </section>
+
+    <section id="habilidades" class="section skills-section" data-explore aria-labelledby="skills-title"><div class="container">
+      <div class="section-label"><span>03</span><p>HABILIDADES</p></div>
+      <div class="section-heading"><div><h2 id="skills-title">Conhecimento ganha valor<br/>quando se conecta.</h2><p>Explore uma competência para descobrir onde ela aparece na prática.</p></div><Icon name="branch" size={46}/></div>
+      <div class="skills-layout"><div class="skill-tree">
+        <div class="skill-root"><Icon name="code" size={19}/><span>ENGENHARIA & CONSTRUÇÃO</span><span class="root-dot"></span></div>
+        {skillGroups.map(g => <div class="skill-branch"><div class="skill-group-heading"><span class="mono">{g.code}</span><h3>{g.name}</h3></div><div class="skill-nodes">{g.skills.map(s => <button data-skill={s} class="skill-node" aria-pressed="false" aria-controls="skill-detail">{s}</button>)}</div></div>)}
+      </div><aside id="skill-detail" class="skill-detail" aria-live="polite" aria-atomic="true"><span class="eyebrow">CONHECIMENTO APLICADO</span><Icon name="branch" size={32}/><h3>Uma habilidade.<br/>Múltiplas conexões.</h3><p>Selecione uma tecnologia ou prática para ver projetos e experiências relacionados.</p><span class="skill-note">Sem barras de nível. Com contexto real.</span></aside></div>
+      <noscript><div class="nojs-skills"><h3>Competências em contexto</h3>{projects.map(p => <p><a href={`/projetos/${p.slug}/`}>{p.name}</a>: {p.tech.join(', ')}</p>)}</div></noscript>
+      {skillGroups.flatMap(g => g.skills.map(s => {
+        const related = relatedProjects(s);
+        const work = experience.filter(e => e.tech.includes(s));
+        return <template data-skill-template={s}><span class="eyebrow">{g.name}</span><h3>{s}</h3>{related.length > 0 && <><p class="detail-label">APLICADO EM PROJETOS</p><div class="skill-project-links">{related.map(p => <a href={`/projetos/${p.slug}/`}><span>{p.name}</span><Icon name="arrow" size={15}/></a>)}</div></>}{work.length > 0 && <><p class="detail-label">EXPERIÊNCIA ASSOCIADA</p>{work.map(e => <p class="skill-work"><strong>{e.organization}</strong><br/>{e.title}</p>)}</>}{related.length === 0 && work.length === 0 && <p>Competência declarada no perfil profissional. O material de referência não a associa individualmente a um projeto ou experiência.</p>}<span class="skill-note">Relações baseadas no README de referência.</span></template>;
+      }))}
+    </div></section>
+
+    <section id="trajetoria" class="section timeline-section container" data-explore aria-labelledby="timeline-title">
+      <div class="section-label"><span>04</span><p>TRAJETÓRIA</p></div>
+      <div class="section-heading"><div><h2 id="timeline-title">Cada capítulo,<br/>uma nova perspectiva.</h2><p>Construir, aprender e compartilhar fazem parte do mesmo caminho.</p><a href={profile.resume} target="_blank" rel="noopener" class="text-button">Ver currículo completo <Icon name="arrow" size={16}/></a></div></div>
+      <div class="timeline-layout"><div><h3 class="timeline-column-title">Experiência & ensino</h3><div class="timeline">{experience.map((e,i) => <details open={i === 0} class="timeline-item"><summary><span class="timeline-point"></span><span class="mono timeline-date">{e.period}</span><span class="timeline-title">{e.title}</span><span class="timeline-org">{e.organization}</span><span class="expand-icon" aria-hidden="true">+</span></summary><div class="timeline-content"><p>{e.description}</p><div class="tags">{e.tech.map(t => <span>{t}</span>)}</div></div></details>)}</div></div><div class="education"><h3 class="timeline-column-title">Formação</h3>{education.map(e => <article><Icon name="book" size={24}/><span class="mono">{e.period}</span><h4>{e.title}</h4><p>{e.organization}</p><span class="education-type">{e.detail}</span></article>)}<div class="learning-note"><span class="accent">↗</span><p>Fundamentos que sustentam<br/>a próxima construção.</p></div></div></div>
+    </section>
+
+    <section id="pesquisa" class="section research-section container" data-explore aria-labelledby="research-title">
+      <div class="research-panel"><div class="research-copy"><div class="section-label"><span>05</span><p>PESQUISA</p></div><span class="research-status"><span class="status-dot"></span> Investigação em andamento</span><h2 id="research-title">Boas perguntas.<br/>Evidências melhores.</h2><p>Como investigar padrões de projeto em blockchain a partir de discussões open source? Exploro ferramentas com LLMs, validação de dados e amostragem rastreável para apoiar essa análise.</p><a class="button ghost" href="/projetos/blockchain-research/">Conheça a investigação <Icon name="arrow" size={17}/></a></div><div class="research-log"><div class="log-heading mono"><Icon name="flask" size={17}/> CADERNO DE INVESTIGAÇÃO <span>↗</span></div><div class="log-entry"><span>01</span><div><h3>Preparar & auditar</h3><p>Corpus de issues e pull requests. Registros rastreáveis para análise.</p></div></div><div class="log-entry"><span>02</span><div><h3>Amostrar & classificar</h3><p>Amostragem estratificada, classificação hierárquica e respostas estruturadas.</p></div></div><div class="log-entry"><span>03</span><div><h3>Validar & documentar</h3><p>Evidências e checkpoints para inspecionar e retomar execuções.</p></div></div><div class="research-caveat"><strong>Estado atual</strong><p>Validação metodológica pendente. O sorteio definitivo da amostra ainda não foi executado.</p></div></div></div>
+    </section>
+
+    <section id="contato" class="section contact-section container" data-explore aria-labelledby="contact-title">
+      <div class="section-label"><span>06</span><p>CONTATO</p></div>
+      <div class="contact-grid"><div><div class="eyebrow accent">O PRÓXIMO CAPÍTULO PODE SER EM CONJUNTO.</div><h2 id="contact-title">Tem uma ideia?<br/>Vamos <span class="accent">conectar.</span><Icon name="arrow" size={64}/></h2><p>Para conversar sobre um projeto, compartilhar uma pergunta ou explorar uma colaboração.</p><div class="contact-actions"><a class="button primary" href={profile.linkedin} target="_blank" rel="noopener">Converse comigo no LinkedIn <Icon name="arrow" size={18}/></a><a class="button ghost" href={`mailto:${profile.email}`}><Icon name="mail" size={18}/> Envie um e-mail</a></div></div><div class="contact-links"><a href={profile.linkedin} target="_blank" rel="noopener"><span><small>VAMOS CONVERSAR</small>LinkedIn</span><Icon name="arrow" size={23}/></a><a href={profile.github} target="_blank" rel="noopener"><span><small>EXPLORE O CÓDIGO</small>GitHub</span><Icon name="arrow" size={23}/></a><a href={profile.resume} target="_blank" rel="noopener"><span><small>UM RESUMO DA TRAJETÓRIA</small>Currículo <small class="inline">PDF</small></span><Icon name="arrow" size={23}/></a>{profile.email && <div class="email-contact"><a href={`mailto:${profile.email}`}>{profile.email}</a><button class="icon-button js-only" data-copy-email={profile.email} aria-label="Copiar e-mail"><Icon name="copy"/></button></div>}</div></div>
+    </section>
+  </main>
+</Layout>

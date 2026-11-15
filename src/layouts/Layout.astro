@@ -1,0 +1,65 @@
+---
+import '@fontsource-variable/manrope';
+import '@fontsource/ibm-plex-mono/400.css';
+import '../styles/global.css';
+import Icon from '../components/Icon.astro';
+import Dialogs from '../components/Dialogs.astro';
+import { profile } from '../data/portfolio';
+import favicon from '../../assets/images/brand/orbit.svg?url';
+import { getImage } from 'astro:assets';
+import { avatars } from '../data/avatars';
+interface Props { title?: string; description?: string; project?: string; noindex?: boolean }
+const { title = `${profile.name} — Desenvolvimento, pesquisa e conexões`, description = profile.description, project, noindex = false } = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const social = await getImage({ src: avatars[0].image, width: 1200, height: 1200, format: 'jpeg', quality: 85 });
+const schema = { '@context': 'https://schema.org', '@type': 'Person', name: profile.fullName, alternateName: profile.name, description: profile.description, ...(Astro.site ? { url: Astro.site.href } : {}), sameAs: [profile.linkedin, profile.github], alumniOf: { '@type': 'EducationalOrganization', name: 'EEEP Otília Correia Saraiva' }, knowsAbout: ['Desenvolvimento web', 'Engenharia de software', 'Sistemas embarcados'] };
+---
+<!doctype html>
+<html lang="pt-BR" data-theme="dark" data-mode="exploration">
+  <head>
+    <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="color-scheme" content="dark light"/><meta name="theme-color" content="#111613"/>
+    <title>{title}</title><meta name="description" content={description}/>
+    {noindex && <meta name="robots" content="noindex"/>}
+    {canonical && <link rel="canonical" href={canonical}/>}
+    <link rel="icon" href={favicon} type="image/svg+xml"/>
+    <meta property="og:type" content="website"/><meta property="og:locale" content="pt_BR"/>
+    <meta property="og:title" content={title}/><meta property="og:description" content={description}/>
+    <meta property="og:site_name" content="Irlan Barros · Developer Odyssey"/>
+    {canonical && <meta property="og:url" content={canonical}/>}
+    {Astro.site && <meta property="og:image" content={new URL(social.src, Astro.site).href}/>}
+    <meta property="og:image:alt" content="Retrato ilustrado de Irlan Barros"/>
+    <meta name="twitter:card" content="summary"/><meta name="twitter:title" content={title}/><meta name="twitter:description" content={description}/>
+    <script type="application/ld+json" set:html={JSON.stringify(schema).replace(/</g, '\\u003c')}/>
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      try {
+        const theme = localStorage.getItem('irlan-odyssey:theme');
+        const mode = localStorage.getItem('irlan-odyssey:mode');
+        const resolved = theme === 'light' || theme === 'dark' ? theme : matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.dataset.theme = resolved;
+        if (mode === 'professional') document.documentElement.dataset.mode = mode;
+      } catch { /* HTML escuro continua utilizável se armazenamento estiver bloqueado. */ }
+    </script>
+  </head>
+  <body data-project={project}>
+    <a href="#conteudo" class="skip-link">Pular para o conteúdo</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="/" aria-label="Irlan Barros, início"><img src={favicon} width="36" height="36" alt=""/><span>irlan<span class="brand-dot">.</span>barros</span></a>
+        <nav class="desktop-nav" aria-label="Navegação principal"><a href="/#sobre">Sobre</a><a href="/#projetos">Projetos</a><a href="/#trajetoria">Trajetória</a><a href="/#contato">Contato</a></nav>
+        <div class="header-actions">
+          <button type="button" class="mode-button js-only" data-toggle-mode aria-pressed="false"><Icon name="compass" size={16}/><span data-mode-label>Modo profissional</span></button>
+          <button type="button" class="icon-button js-only search-button" data-open-command aria-keyshortcuts="Control+k Meta+k" title="Buscar no portfólio (Control ou Command K)"><Icon name="search" size={19}/><span class="sr-only">Buscar no portfólio </span><kbd>⌘ K</kbd></button>
+          <button type="button" class="icon-button js-only theme-button" data-toggle-theme aria-label="Tema: sistema. Alternar tema"><Icon name="sun" size={19}/></button>
+          <button type="button" class="icon-button mobile-menu-button js-only" data-menu-toggle aria-expanded="false" aria-controls="mobile-nav" aria-label="Abrir menu"><Icon name="menu"/></button>
+        </div>
+      </div>
+      <nav class="mobile-nav" id="mobile-nav" aria-label="Menu móvel" hidden><a href="/#sobre">Sobre mim</a><a href="/#projetos">Projetos</a><a href="/#habilidades">Habilidades</a><a href="/#trajetoria">Experiência e formação</a><a href="/#pesquisa">Pesquisa</a><a href="/#contato">Contato</a><a href={profile.resume}>Currículo PDF</a></nav>
+    </header>
+    <slot/>
+    <footer class="site-footer container"><a class="brand" href="/">irlan<span class="brand-dot">.</span>barros</a><p>Construído com intenção. Sempre em evolução.</p><a href="#conteudo" class="back-top">Voltar ao início <Icon name="arrow" size={16}/></a><div class="footer-bottom"><span>© {new Date().getFullYear()} {profile.name}</span><span>Developer Odyssey <span class="accent">/</span> Feito com Astro & TypeScript</span><button class="text-button js-only" data-easter-egg aria-label="Sinal: ativo. Descobrir mensagem da Developer Odyssey">SINAL: ATIVO <span class="status-dot"></span></button></div></footer>
+    <Dialogs/>
+    <script>import '../scripts/app';</script>
+  </body>
+</html>

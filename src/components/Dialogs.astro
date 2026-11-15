@@ -1,0 +1,52 @@
+---
+import { getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import { avatars, defaultAvatarId } from '../data/avatars';
+import { profile, projects, sections, skillGroups, achievements } from '../data/portfolio';
+const catalog = await Promise.all([...avatars].sort((a, b) => a.order - b.order).map(async a => ({
+  id: a.id, name: a.name, alt: a.alt, position: a.position, pixelated: a.pixelated,
+  src: (await getImage({ src: a.image, width: 640, format: 'webp', quality: a.pixelated ? 100 : 90 })).src,
+  thumb: (await getImage({ src: a.image, width: 160, format: 'webp', quality: a.pixelated ? 100 : 85 })).src,
+})));
+---
+<dialog id="avatar-dialog" class="modal avatar-modal" aria-labelledby="avatar-title">
+  <div class="dialog-header"><span class="eyebrow">PERSONALIZE SUA EXPLORAÇÃO</span><button type="button" class="icon-button" data-close-dialog aria-label="Fechar seleção de avatar"><Icon name="close" /></button></div>
+  <h2 id="avatar-title">Um perfil. Outras perspectivas.</h2>
+  <p class="muted">Escolha um estilo. O conhecimento e a história continuam os mesmos.</p>
+  <div class="avatar-options" role="group" aria-label="Estilos de avatar">
+    {catalog.map(a => <button type="button" class="avatar-option" data-select-avatar={a.id} aria-pressed={a.id === defaultAvatarId}>
+      <div class="avatar-thumb"><img data-src={a.thumb} width="160" height="160" alt="" class:list={{ pixelated: a.pixelated }} style={`object-position:${a.position}`} /><span class="selection-check"><Icon name="check" size={16}/></span></div>
+      <span>{a.name}</span>
+    </button>)}
+  </div>
+  <div class="dialog-footer"><span class="small muted">{avatars.length} estilos · todos disponíveis</span><button type="button" class="text-button" data-reset-avatar><Icon name="reset" size={16}/> Restaurar avatar padrão</button></div>
+  <p class="sr-only" role="status" data-avatar-feedback></p>
+</dialog>
+
+<dialog id="command-dialog" class="modal command-modal" aria-labelledby="command-title">
+  <h2 id="command-title" class="sr-only">Buscar no portfólio</h2>
+  <div class="command-search"><Icon name="search"/><input type="search" id="command-search" placeholder="Para onde vamos?" aria-label="Buscar projetos, tecnologias ou ações" autocomplete="off"/><button type="button" class="key" data-close-dialog aria-label="ESC — fechar busca">ESC</button></div>
+  <div class="command-results" id="command-results">
+    {sections.map(s => <a class="command-item" href={`/#${s.id}`} data-command-search={`${s.label} ${s.exploration}`}><Icon name="compass"/><span>{s.label}</span><small>Seção</small></a>)}
+    {projects.map(p => <a class="command-item" href={`/projetos/${p.slug}/`} data-command-search={`${p.name} ${p.tech.join(' ')}`}><Icon name="code"/><span>{p.name}</span><small>Projeto</small></a>)}
+    {skillGroups.flatMap(g => g.skills).map(s => <a class="command-item" href={`/#habilidades`} data-command-skill={s} data-command-search={`${s} tecnologia habilidade`}><Icon name="branch"/><span>{s}</span><small>Competência</small></a>)}
+    <button class="command-item" data-command-action="theme" data-command-search="alternar tema claro escuro sistema"><Icon name="sun"/><span>Alternar tema</span><small>Ação</small></button>
+    <button class="command-item" data-command-action="mode" data-command-search="alternar modo profissional exploração"><Icon name="compass"/><span>Alternar modo de navegação</span><small>Ação</small></button>
+    <button class="command-item" data-command-action="avatar" data-command-search="trocar avatar retrato"><Icon name="avatar"/><span>Trocar avatar</span><small>Ação</small></button>
+    <button class="command-item" data-command-action="reset-avatar" data-command-search="restaurar avatar padrão"><Icon name="reset"/><span>Restaurar avatar padrão</span><small>Ação</small></button>
+    <a class="command-item" href={profile.resume} target="_blank" rel="noopener" data-command-search="currículo cv pdf"><Icon name="file"/><span>Visualizar currículo</span><small>PDF</small></a>
+  </div>
+  <p class="command-empty" hidden>Nenhum resultado. Tente um projeto, tecnologia ou seção.</p>
+  <div class="dialog-footer small muted"><span>↑ ↓ navegar &nbsp; ↵ abrir</span><span>Seu próximo destino, a um comando.</span></div>
+  <p class="sr-only" role="status" data-command-status></p>
+</dialog>
+
+<dialog id="progress-dialog" class="modal" aria-labelledby="progress-title">
+  <div class="dialog-header"><span class="eyebrow">SEU DIÁRIO DE BORDO</span><button class="icon-button" data-close-dialog aria-label="Fechar progresso"><Icon name="close"/></button></div>
+  <h2 id="progress-title">A curiosidade abre caminhos.</h2>
+  <p class="muted">Conquistas da sua visita, salvas apenas neste navegador. Nenhuma delas limita o acesso ao conteúdo.</p>
+  <ul class="achievement-list">{achievements.map(a => <li data-achievement={a.id}><Icon name="trophy"/><div><strong>{a.title}</strong><p>{a.description}</p></div><span class="achievement-state">A explorar</span></li>)}</ul>
+  <div class="dialog-footer"><span class="small muted"><span data-progress-count>0</span> de {sections.length} seções visitadas</span><button class="text-button" data-reset-progress><Icon name="reset" size={16}/> Reiniciar progresso</button></div>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+<script type="application/json" id="avatar-catalog" set:html={JSON.stringify({ avatars: catalog, defaultId: defaultAvatarId }).replace(/</g, '\\u003c')} />

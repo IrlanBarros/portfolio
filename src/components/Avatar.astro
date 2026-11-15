@@ -1,0 +1,8 @@
+---
+import { getImage } from 'astro:assets';
+import { avatars, defaultAvatarId } from '../data/avatars';
+interface Props { priority?: boolean; class?: string }
+const avatar = avatars.find(a => a.id === defaultAvatarId) || avatars[0];
+const optimized = await getImage({ src: avatar.image, width: 640, format: 'webp', quality: 90 });
+---
+<img src={optimized.src} alt={avatar.alt} width="640" height="640" class:list={['active-avatar', Astro.props.class]} data-active-avatar data-avatar-id={avatar.id} style={`object-position:${avatar.position}`} loading={Astro.props.priority ? 'eager' : 'lazy'} fetchpriority={Astro.props.priority ? 'high' : 'auto'} decoding="async" />
